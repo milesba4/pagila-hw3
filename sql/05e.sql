@@ -19,12 +19,13 @@
  * This problem should be solved by a self join on the "film_category" table.
  */
 
-select title from (select title, count(*) as num from (SELECT f2.title, category.name
-FROM film f
-JOIN film_category fact1 ON (f.film_id = fact1.film_id)
-join category on (fact1.category_id=category.category_id)
-join film_category fact2 on (category.category_id=fact2.category_id)
-JOIN film f2 ON (f2.film_id = fact2.film_id)
-where f.title = 'AMERICAN CIRCUS') as t group by title) as w
-where num >= 2
-order by title;
+SELECT f2.title
+FROM film f1
+JOIN film_category fc1 ON fc1.film_id = f1.film_id
+JOIN category c ON c.category_id = fc1.category_id
+JOIN film_category fc2 ON fc2.category_id = c.category_id
+JOIN film f2 ON f2.film_id = fc2.film_id
+WHERE f1.title = 'AMERICAN CIRCUS'
+GROUP BY f2.title
+HAVING COUNT(fc1.category_id) > 1
+ORDER BY f2.title;

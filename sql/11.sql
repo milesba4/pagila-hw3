@@ -12,20 +12,16 @@
  * (or slightly less conveniently with subqueries).
  */
 
-SELECT
-    c.first_name,
-    c.last_name,
-    f.title,
-    r.rental_date
-FROM
-    customer c
+SELECT DISTINCT c.first_name, c.last_name, r.title, r.rental_date
+FROM customer c
 LEFT JOIN LATERAL (
-    SELECT rental_id, rental_date, inventory_id
-    FROM rental
-    WHERE customer_id = c.customer_id
-    ORDER BY rental_date DESC
-    LIMIT 1
+  SELECT f.title, r.rental_date
+  FROM rental r
+  JOIN inventory i ON r.inventory_id = i.inventory_id
+  JOIN film f ON f.film_id = i.film_id
+  WHERE customer_id = c.customer_id
+  ORDER BY rental_date DESC
+  LIMIT 1
 ) r ON true
-JOIN inventory i ON r.inventory_id = i.inventory_id
-JOIN film f ON i.film_id = f.film_id
-ORDER BY last_name, first_name;
+GROUP BY c.first_name, c.last_name, r.title, r.rental_date
+ORDER BY c.last_name, c.first_name;

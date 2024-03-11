@@ -15,8 +15,8 @@ left join lateral (
     join category cg using (category_id)
     where customer_id = c.customer_id
     order by rental_date desc
-
+    
 ) r on true
 where r.name = 'Action'
-group by c.customer_id --, c.first_name, c.last_name
-having count(c.customer_id) >= 4
+group by c.customer_id --, c.first_name, c.last_name 
+having count(c.customer_id) >= 4;
